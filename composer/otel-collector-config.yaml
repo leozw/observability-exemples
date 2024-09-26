@@ -28,7 +28,7 @@ exporters:
       Authorization: "Bearer <API_TOKEN>"
 
   loki:
-    endpoint: "http://loki.elvenobservability.com/loki/api/v1/push"
+    endpoint: "https://loki.elvenobservability.com/loki/api/v1/push"
     default_labels_enabled:
       exporter: false
       job: true
@@ -40,9 +40,9 @@ processors:
   batch: {}
   resource:
     attributes:
-    - action: insert
-      key: loki.tenant
-      value: host.name
+      - action: insert
+        key: loki.tenant
+        value: host.name
   filter:
     metrics:
       exclude:

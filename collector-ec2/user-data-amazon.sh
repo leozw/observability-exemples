@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Update packages and install Docker
-yum update -y
-amazon-linux-extras install docker -y
-service docker start
+sudo yum update -y
+sudo amazon-linux-extras install docker -y
+sudo service docker start
 
 # Add the ec2-user to the docker group
-usermod -aG docker ec2-user
+sudo usermod -aG docker ec2-user
 
 # Create the otel-config.yaml file
 cat <<EOF > /home/ec2-user/otel-config.yaml
@@ -32,7 +32,7 @@ exporters:
       Authorization: "Bearer <your-token>"
 
   loki:
-    endpoint: "http://loki.elvenobservability.com/loki/api/v1/push"
+    endpoint: "https://loki.elvenobservability.com/loki/api/v1/push"
     default_labels_enabled:
       exporter: false
       job: true

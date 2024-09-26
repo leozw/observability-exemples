@@ -19,14 +19,14 @@ exporters:
   otlphttp:
     endpoint: https://tempo.elvenobservability.com/http
     headers:
-      X-Scope-OrgID: "<TENANT_ID>"
-      Authorization: "Bearer <API_TOKEN>"
+      X-Scope-OrgID: "${TENANT_ID}"
+      Authorization: "Bearer ${API_TOKEN}"
 
   prometheusremotewrite:
     endpoint: https://mimir.elvenobservability.com/api/v1/push
     headers:
-      X-Scope-OrgID: "<TENANT_ID>"
-      Authorization: "Bearer <API_TOKEN>"
+      X-Scope-OrgID: "${TENANT_ID}"
+      Authorization: "Bearer ${API_TOKEN}"
 
   loki:
     endpoint: "https://loki.elvenobservability.com/loki/api/v1/push"
@@ -34,8 +34,8 @@ exporters:
       exporter: false
       job: true
     headers:
-      X-Scope-OrgID: "<TENANT_ID>"
-      Authorization: "Bearer <API_TOKEN>"
+      X-Scope-OrgID: "${TENANT_ID}"
+      Authorization: "Bearer ${API_TOKEN}"
 
 processors:
   batch: {}
