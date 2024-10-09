@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-java-actuator
+  labels:
+    app: spring-java-actuator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-java-actuator
+  template:
+    metadata:
+      labels:
+        app: spring-java-actuator
+      annotations:
+        prometheus: "true"
+    spec:
+      shareProcessNamespace: true # Need to add this line
+      containers:
+        - name: spring-java-actuator
+          image: leonardozwirtes/spring-java-actuator:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+
+        # From here on down, too. The container and its envs. Just change them to the values ​​you want.
+        - name: autoinstrumenter
+          image: grafana/beyla:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN", "SYS_PTRACE"]
+          env:
+            - name: BEYLA_SERVICE_NAME
+              value: "java-app"
+            - name: BEYLA_METRICS_ENABLED
+              value: "true"
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
+            - name: BEYLA_OPEN_PORT
+              value: "8080"
+            - name: BEYLA_BPF_TRACK_REQUEST_HEADERS
+              value: "true"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=java-app,evironment=prd"
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: "http://opentelemetrycollector.monitoring.svc.cluster.local:4318"

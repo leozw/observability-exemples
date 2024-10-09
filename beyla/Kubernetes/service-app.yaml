@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-java-actuator-service
+spec:
+  selector:
+    app: spring-java-actuator
+  ports:
+  - name: app
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: scrap-prom
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
