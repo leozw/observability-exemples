@@ -436,12 +436,42 @@ config:
   snippets:
     pipelineStages:
       - cri: {}
+      
       - json:
           expressions:
             timestamp: timestamp
             loglevel: level
             logger: logger
             message: message
+          on_failure:
+            - labeldrop:
+                - timestamp
+                - loglevel
+                - logger
+                - message
+      
+      - match:
+          selector: '{log_format!="json"}'   
+          stages:
+            - regex:
+                expression: '(?P<message>.*)'
+      
+      - labels:
+          loglevel: '{{ .loglevel | default "INFO" }}'
+          logger: '{{ .logger | default "default-logger" }}'
+          message: '{{ .message | default "No message provided" }}'
+      
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+          on_failure:
+            fallback_format: "Unix"
+      
+      - labels:
+          severity: '{{ .loglevel }}'
+          source: '{{ .namespace | default "unknown-namespace" }}'
+          job: '{{ .job | default "unknown-job" }}'
+
     common:
       # Filtro por annotation
       # - action: keep
