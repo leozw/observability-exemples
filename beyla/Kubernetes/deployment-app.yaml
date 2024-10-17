@@ -46,5 +46,5 @@ spec:
               value: "true"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.name=java-app,evironment=prd"
-            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://opentelemetrycollector.monitoring.svc.cluster.local:4318"
