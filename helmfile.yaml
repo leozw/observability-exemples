@@ -1,0 +1,116 @@
+repositories:
+  - name: konga
+    url: https://leozw.github.io/konga
+
+  - name: kong
+    url: https://charts.konghq.com
+
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+
+  - name: prometheus-grafana
+    url: https://prometheus-community.github.io/helm-charts
+
+  - name: postgresql
+    url: https://leozw.github.io/postgresql
+
+  - name: grafana-org-setup
+    url: https://leozw.github.io/grafana-org-setup
+
+  - name: faro-collector
+    url: https://leozw.github.io/faro-collector
+
+  - name: jetstack
+    url: https://charts.jetstack.io
+
+releases:
+  - name: faro-collector
+    namespace: default
+    createNamespace: true
+    chart: faro-collector/faro-collector
+    values:
+      - ./faro-collector/values.yaml
+
+  - name: grafana-org-setup
+    namespace: default
+    createNamespace: true
+    chart: grafana-org-setup/grafana-org-setup
+    values:
+      - ./grafana-org-setup/values.yaml
+
+  - name: kong-db
+    namespace: db
+    createNamespace: true
+    chart: postgresql/postgresql
+    values:
+      - ./postgres/values.yaml
+
+  - name: kong
+    namespace: kong
+    createNamespace: true
+    chart: kong/kong
+    values:
+      - ./kong/values.yaml
+    needs:
+      - db/kong-db
+
+  - name: konga
+    namespace: kong
+    createNamespace: true
+    chart: konga/konga
+    values:
+      - ./konga/values.yaml
+    needs:
+      - kong/kong
+
+  - name: grafana
+    namespace: lgtm
+    createNamespace: true
+    chart: grafana/grafana
+    values:
+      - ./grafana/values-grafana.yaml
+
+  - name: loki
+    namespace: lgtm
+    createNamespace: true
+    chart: grafana/loki-distributed
+    values:
+      - ./loki/values-loki.yaml
+
+  - name: mimir
+    namespace: lgtm
+    createNamespace: true
+    chart: grafana/mimir-distributed
+    values:
+      - ./mimir/values-mimir.yaml
+
+  - name: prometheus
+    namespace: lgtm
+    createNamespace: true
+    chart: prometheus-community/kube-prometheus-stack
+    values:
+      - ./prometheus/values-prometheus.yaml
+
+  - name: promtail
+    namespace: lgtm
+    createNamespace: true
+    chart: grafana/promtail
+    values:
+      - ./promtail/values-promtail.yaml
+
+  - name: tempo
+    namespace: lgtm
+    createNamespace: true
+    chart: grafana/tempo-distributed
+    values:
+      - ./tempo/values-tempo.yaml
+
+  - name: cert-manager
+    namespace: cert-manager
+    createNamespace: true
+    chart: jetstack/cert-manager
+    version: v1.12.2
+    values:
+      - ./cert-manager/values.yaml
+    needs:
+      - lgtm/prometheus
