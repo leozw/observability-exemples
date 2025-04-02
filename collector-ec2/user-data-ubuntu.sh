@@ -27,14 +27,7 @@ exporters:
     headers:
       X-Scope-OrgID: "<TENANT_ID>"
       Authorization: "Bearer <your-token>"
-  loki:
-    endpoint: "http://loki.elvenobservability.com/loki/api/v1/push"
-    default_labels_enabled:
-      exporter: false
-      job: true
-    headers:
-      X-Scope-OrgID: "<TENANT_ID>"
-      Authorization: "Bearer <your-token>"
+
 processors:
   batch: {}
   resource:
@@ -61,10 +54,6 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlphttp]
-    logs:
-      receivers: [otlp]
-      processors: [resource, batch]
-      exporters: [loki]
 EOF
 
 # Run Otel Collector Contrib using Docker
